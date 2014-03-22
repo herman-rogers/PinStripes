@@ -1,5 +1,5 @@
 package com.base.engine;
-public class Time {
+public class psTime {
 	public static final long second = 1000000000L;
 	private static double delta;
 	public static long GetTime( ){
@@ -9,6 +9,6 @@ public class Time {
 		return delta;
 	}
 	public static void SetDelta( double delta ){
-		Time.delta = delta;
+		psTime.delta = delta;
 	}
 }

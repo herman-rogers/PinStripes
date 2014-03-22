@@ -1,6 +1,6 @@
 package com.base.engine;
 
-public class Quaternion {
+public class psQuaternion {
 	private float x;
 	private float y;
 	private float z;
@@ -29,7 +29,7 @@ public class Quaternion {
 	public void SetW(float w) {
 		this.w = w;
 	}
-	public Quaternion( float x, float y, float z, float w ){
+	public psQuaternion(float x, float y, float z, float w){
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -38,7 +38,7 @@ public class Quaternion {
 	public float Length( ){
 		return ( float )Math.sqrt(x * x + y * y + z * z + w * w);
 	}
-	public Quaternion Normalize( ){
+	public psQuaternion Normalize( ){
 		float length = Length( );
 		x /= length;
 		y /= length;
@@ -46,21 +46,21 @@ public class Quaternion {
 		w /= length;
 		return this;
 	}
-	public Quaternion Conjugate( ){
-		return new Quaternion( -x, -y, -z, w );
+	public psQuaternion Conjugate( ){
+		return new psQuaternion( -x, -y, -z, w );
 	}
-	public Quaternion Multiply( Quaternion r ){
+	public psQuaternion Multiply( psQuaternion r ){
 		float w_ = w * r.GetW( ) - x * r.GetX( ) - y * r.GetY( ) - z * r.GetZ( );
 		float x_ = x * r.GetW( ) + w * r.GetX( ) + y * r.GetZ( ) - z * r.GetY( );
 		float y_ = y * r.GetW( ) + w * r.GetY( ) + z * r.GetX( ) - x * r.GetZ( );
 		float z_ = z * r.GetW( ) + w * r.GetZ( ) + x * r.GetY( ) - y * r.GetX( );
-		return new Quaternion( x_, y_, z_, w_ );
+		return new psQuaternion( x_, y_, z_, w_ );
 	}
-	public Quaternion Multiply( Vector3f r ){
+	public psQuaternion Multiply( Vector3f r ){
 		float w_ = -x * r.GetX( ) - y * r.GetY( ) - z * r.GetZ( );
 		float x_ =  w * r.GetX( ) + y * r.GetZ( ) - z * r.GetY( );
 		float y_ =  w * r.GetY( ) + z * r.GetX( ) - x * r.GetZ( );
 		float z_ =  w * r.GetZ( ) + x * r.GetY( ) - y * r.GetX( );
-		return new Quaternion( x_, y_, z_, w_ );
+		return new psQuaternion( x_, y_, z_, w_ );
 	}
 }

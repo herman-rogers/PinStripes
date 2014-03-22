@@ -2,12 +2,13 @@ package com.base.engine;
 public class MainComponent {
 	public static final double frameCap = 5000.0;
 	static final int           screenWidth = 800;
-	static final int           screenHeight = 600;
+	static final int           screenHeight = 800;
 	static final String        screenTitle	= "PinStripes";
 	private boolean            isRunning;
 	private Game game;
 	public MainComponent( ){
-		RenderUtil.InitGraphics( );
+        System.out.println( psUtil.GetOpenGLVersion() );
+		psRenderUtil.InitGraphics( );
 		isRunning = false;
 		game = new Game( );
 	}
@@ -28,14 +29,14 @@ public class MainComponent {
 		long frames 			= 0;
 		long frameCounter 		= 0;
 		final double frameTime	= 1 / frameCap;
-		long lastTime 			= Time.GetTime( );
+		long lastTime 			= psTime.GetTime();
 		double unprocessedTime 	= 0;
 		while ( isRunning ){
 			boolean render = false;
-			long startTime 		= Time.GetTime( );
+			long startTime 		= psTime.GetTime();
 			long passedTime		= startTime - lastTime;
 			lastTime = startTime;
-			unprocessedTime += passedTime / ( double )Time.second;
+			unprocessedTime += passedTime / ( double ) psTime.second;
 			while ( unprocessedTime > frameTime ){
 				render = true;
 				unprocessedTime -= frameTime;
@@ -43,12 +44,12 @@ public class MainComponent {
 				if ( Window.IsCloseRequested( )  ){
 					Stop( );
 				}
-				Time.SetDelta( frameTime );
+				psTime.SetDelta(frameTime);
 				game.Input( );
 				psInput.update( );
 				game.Update();
-				if ( frameCounter >= Time.second ){
-				//	System.out.println( frames ); //Use this to Debug the Current FrameRate
+				if ( frameCounter >= psTime.second ){
+					System.out.println( frames ); //Use this to Debug the Current FrameRate
 					frames 		 = 0;
 					frameCounter = 0;
 				}
@@ -66,7 +67,7 @@ public class MainComponent {
 		}
 	}
 	private void Render( ){
-		RenderUtil.ClearScreen( );
+		psRenderUtil.ClearScreen();
 		game.Render( );
 		Window.Render( );
 	}
