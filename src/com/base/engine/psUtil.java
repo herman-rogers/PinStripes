@@ -17,9 +17,14 @@ public class psUtil {
     public static FloatBuffer CreateFlippedBuffer( psVertex[] vertices ){
 		FloatBuffer buffer = CreateFloatBuffer(vertices.length * psVertex.SIZE);
 		for( int i = 0; i < vertices.length; i++ ){
-			buffer.put( vertices[i].GetPos().GetX( ) );
-			buffer.put( vertices[i].GetPos().GetY( ) );
-			buffer.put( vertices[i].GetPos().GetZ( ) );
+			buffer.put( vertices[i].GetPos( ).GetX( ) );
+			buffer.put( vertices[i].GetPos( ).GetY( ) );
+			buffer.put( vertices[i].GetPos( ).GetZ( ) );
+            buffer.put( vertices[i].GetTextureCoordinate( ).GetX( ) );
+            buffer.put( vertices[i].GetTextureCoordinate( ).GetY( ) );
+            buffer.put( vertices[i].GetNormal( ).GetX( ) );
+            buffer.put( vertices[i].GetNormal( ).GetY( ) );
+            buffer.put( vertices[i].GetNormal( ).GetZ( ) );
 		}
 		buffer.flip( );
 		return buffer;

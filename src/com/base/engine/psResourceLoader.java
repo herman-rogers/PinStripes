@@ -1,8 +1,7 @@
 package com.base.engine;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import org.newdawn.slick.opengl.TextureLoader;
 
 /**
  * Created by Admin on 3/21/14.
@@ -11,36 +10,47 @@ public class psResourceLoader {
     static ArrayList< psVertex > vertices = new ArrayList< psVertex >( );
     static ArrayList< Integer > indices = new ArrayList< Integer >( );
     static StringBuilder shaderSource;
-    static String newFileName;
 
     public static String LoadShader( String filename ){
         shaderSource = new StringBuilder( );
-        newFileName = filename;
-        TryCatchNewFile( "shader", "./resources/shaders/" );
+        DoesFileExist( "shader", "./resources/shaders/" + filename );
         return shaderSource.toString( );
     }
 
     public static psMesh LoadMesh( String filename ){
-        newFileName = filename;
-        String[] splitArray = newFileName.split( "\\." );
-        String extension = splitArray[splitArray.length - 1];
-        CheckFileExtension( extension );
-        TryCatchNewFile( "mesh", "./resources/models/" );
+        IsFileTypeSupported( GetFileExtension( filename ) );
+        DoesFileExist( "mesh", "./resources/models/" + filename );
         return CreateNewMesh( );
     }
 
-    static void TryCatchNewFile( String fileType, String filePath ){
+    public static psTexture LoadTexture( String fileName  ){
         try {
-            ReadNewFile( fileType, filePath );
+            int id = TextureLoader.getTexture( GetFileExtension( fileName ), new FileInputStream(new File("./resources/textures/" + fileName))).getTextureID( );
+            return new psTexture( id );
+        } catch ( Exception e ){
+            e.printStackTrace( );
+        }
+        return null;
+    }
+
+    public static String GetFileExtension( String fileName ){
+        String[] splitArray = fileName.split( "\\." );
+        String extension = splitArray[ splitArray.length - 1 ];
+        return extension;
+    }
+
+    static void DoesFileExist( String fileType, String filePath ){
+        try {
+            ReadNewFile(fileType, filePath);
         } catch ( Exception e ){
             e.printStackTrace( );
             System.exit( 1 );
         }
     }
 
-    static void CheckFileExtension( String isSupported ){
-        if( !isSupported.equals( "obj" ) ){
-            System.err.println( "Error: File System not supported for mesh data " + isSupported );
+    static void IsFileTypeSupported( String fileType ){
+        if( !fileType.equals( "obj" ) ){
+            System.err.println( "Error: File System not supported for mesh data " + fileType );
             new Exception(  ).printStackTrace( );
             System.exit( 1 );
         }
@@ -48,7 +58,7 @@ public class psResourceLoader {
 
     static void ReadNewFile( String typeOfProcess, String systemPath ) throws IOException{
         BufferedReader fileReader;
-        fileReader = new BufferedReader( new FileReader( systemPath + newFileName ) );
+        fileReader = new BufferedReader( new FileReader( systemPath ) );
         String line;
         while( ( line = fileReader.readLine( ) ) != null ){
             if( typeOfProcess.equals( "mesh" ) ) {
@@ -73,14 +83,15 @@ public class psResourceLoader {
                                                       Float.valueOf( tokens[3] ) ) ) );
         }
         else if ( tokens[0].equals( "f" ) ){
-            indices.add(Integer.parseInt(tokens[1]) - 1);
-            indices.add( Integer.parseInt( tokens[2] ) - 1 );
-            indices.add( Integer.parseInt( tokens[3] ) - 1 );
+            indices.add(Integer.parseInt(tokens[1].split( "/" )[0]) - 1);
+            indices.add( Integer.parseInt( tokens[2].split( "/" )[0] ) - 1 );
+            indices.add( Integer.parseInt( tokens[3].split( "/" )[0] ) - 1 );
+            if( tokens.length > 4 ){
+                indices.add(Integer.parseInt(tokens[1].split( "/" )[0] ) - 1);
+                indices.add( Integer.parseInt( tokens[3].split( "/" )[0] ) - 1 );
+                indices.add( Integer.parseInt( tokens[4].split( "/" )[0] ) - 1 );
+            }
         }
-    }
-
-    static void ProcessShaderFile( String currentLine ){
-        shaderSource.append( currentLine ).append( "\n" );
     }
 
     static psMesh CreateNewMesh( ){
@@ -91,5 +102,9 @@ public class psResourceLoader {
         indices.toArray( indexData );
         createdMesh.AddVertices( vertexData, psUtil.ToIntArray( indexData ) );
         return createdMesh;
+    }
+
+    static void ProcessShaderFile( String currentLine ){
+        shaderSource.append( currentLine ).append( "\n" );
     }
 }

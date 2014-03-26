@@ -1,66 +1,67 @@
 package com.base.engine;
-import org.lwjgl.input.Keyboard;
+
 public class Game {
 	private psMesh mesh;
     private psShader shader;
+    private psMaterial material;
     private psTransform transform;
+    private psCamera camera;
 
 	public Game( ){
-//		mesh = new psMesh( );
-        mesh = psResourceLoader.LoadMesh( "teddyBear.obj" );
-        shader = new psShader( );
+		mesh = new psMesh( );
+//        mesh = psResourceLoader.LoadMesh( "teddybear.obj" );
+        material = new psMaterial( psResourceLoader.LoadTexture( "brick1.png" ), new Vector3f( 139, 119, 101 ), 1, 8 );
+        shader = psPhongShader.getInstance( );
+        camera = new psCamera( );
+        Pyramid( );
         transform = new psTransform( );
-        shader.addVertexShader( psResourceLoader.LoadShader("basicVertex.vshader") );
-        shader.addFragmentShader( psResourceLoader.LoadShader("basicFragment.fshader") );
-        shader.compileShader( );
-        shader.addUniformVariable( "transform" );
+        transform.SetProjection(70.0f, Window.GetWidth(), Window.GetHeight(), 0.1f, 1000);
+        transform.setCamera(camera);
+        psPhongShader.setAmbientLight( new Vector3f( 0.3f, 0.3f, 0.3f ) );
+//        psPhongShader.SetDirectionalLight(new psDirectionalLight(
+//                new psBaseLight(new Vector3f(1.0f, 1.0f, 1.0f), 2.0f),
+//                new Vector3f(0, 0, 3)));
+        psPointLight testPointOne = new psPointLight( new psBaseLight( new Vector3f( 30, 144, 255 ), 0.1f ),
+                                                                       new psAttenuation( 0, 0, 1 ),
+                                                                       new Vector3f( -2.0f, 0.0f, 3.0f ) );
+        psPointLight testPointTwo = new psPointLight( new psBaseLight( new Vector3f( 244, 164, 96 ), 0.1f ),
+                                                                       new psAttenuation( 0, 0, 1 ),
+                                                                       new Vector3f( 2.0f, 0.0f, 3.0f ) );
+        psPhongShader.SetPointLight( new psPointLight[] { testPointOne, testPointTwo } );
+
 	}
 
-    private void Triangle( ){
-        psVertex[] vertices = new psVertex[] { new psVertex( new Vector3f( -1, -1, 0 ) ),
-                new psVertex( new Vector3f( 0, 1, 0 ) ),
-                new psVertex( new Vector3f( 1, -1, 0 ) )};
-        int[] indices = new int[] { 0,1,2 };
-        mesh.AddVertices( vertices, indices );
-    }
-
+    //Example of how to render models programmatically, can be removed
     private void Pyramid( ){
-        psVertex[] vertices = new psVertex[] { new psVertex( new Vector3f( -1, -1, 0 ) ),
-                                               new psVertex( new Vector3f( 0, 1, 0 ) ),
-                                               new psVertex( new Vector3f( 1, -1, 0 ) ),
-                                               new psVertex( new Vector3f( 0, -1, 1 ) ) };
-        int[] indices = new int[] { 0, 1, 3,
-                                    3, 1, 2,
-                                    2, 1, 0,
-                                    0, 2, 3 };
-        mesh.AddVertices( vertices, indices );
+        psVertex[] vertices = new psVertex[] { new psVertex( new Vector3f( -1.0f, -1.0f, 0.5773f ), new Vector2f( 0.0f, 0.0f ) ),
+                                               new psVertex( new Vector3f( 0.0f, -1.0f, -1.15475f ), new Vector2f( 0.5f, 0.0f ) ),
+                                               new psVertex( new Vector3f( 1.0f, -1.0f, 0.5773f ),new Vector2f( 1.0f, 0 ) ),
+                                               new psVertex( new Vector3f( 0.0f, 1.0f, 0.0f ), new Vector2f( 0.5f, 1.0f ) ) };
+        int[] indices = new int[] { 0, 3, 1,
+                1, 3, 2,
+                2, 3, 0,
+                1, 2, 0 };
+        mesh.AddVertices( vertices, indices, true );
     }
 
 	public void Input( ){
-		if ( psInput.GetKeyDown(Keyboard.KEY_SPACE) ){
-			System.out.println( "We've just pressed Down!" );
-		}
-		if ( psInput.GetKeyUp(Keyboard.KEY_SPACE) ){
-			System.out.println( "We've just pressed Up!" );
-		}
-		if ( psInput.GetMouseUp( 0 ) ){
-			System.out.println( "We've just released Right Mouse at " + psInput.GetMousePosition(  ).toString( ) );
-		}
+        camera.Input( );
 	}
 
     float temp = 0.0f; //testing for uniforms, can be removed
 
 	public void Update( ){
-        temp += psTime.GetDelta();
+        temp += psTime.GetDelta( );
         float sineTemp = ( float )Math.sin( temp );
-        transform.setTranslation( sineTemp, 0, 0 );
-        transform.setRotation( 0, sineTemp * 180, 0 );
-        transform.setScale( 0.05f,0.05f,0.05f );
+        transform.SetTranslation( 0, 0, 3 );
+        transform.SetRotation(0, sineTemp * 180, 0); //to rotate scene object
+        transform.SetScale( 0.8f, 0.8f, 0.8f );
 	}
 
 	public void Render( ){
+        psRenderUtil.SetClearColor( psTransform.getCamera( ).getPosition( ).Divide( 2048f ) );
 		shader.bind( );
-        shader.setUniformMatrix("transform", transform.getTransformation());
+        shader.UpdateUniforms(transform.GetTransformation(), transform.GetProjectedTransformation(), material);
         mesh.Draw( );
 	}
 }

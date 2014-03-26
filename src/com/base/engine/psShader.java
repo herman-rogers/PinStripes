@@ -22,6 +22,9 @@ public class psShader {
         glUseProgram( program );
     }
 
+    public void UpdateUniforms( Matrix4f worldMatrix, Matrix4f projectedMatrix, psMaterial material ){
+    }
+
     public void addUniformVariable( String uniformVariable ){
         int uniformLocation = glGetUniformLocation( program, uniformVariable );
         String uniformMessage = failedMsg + "Could not find uniform " + uniformVariable;
@@ -63,7 +66,7 @@ public class psShader {
     }
 
     public void setUniformFloat( String uniformName, float value ){
-        glUniform1f(uniformHashMap.get(uniformName), value);
+        glUniform1f( uniformHashMap.get( uniformName ), value );
     }
 
     public void setUniform( String uniformName, Vector3f value ){

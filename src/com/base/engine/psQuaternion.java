@@ -29,15 +29,18 @@ public class psQuaternion {
 	public void SetW(float w) {
 		this.w = w;
 	}
+
 	public psQuaternion(float x, float y, float z, float w){
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.w = w;
 	}
+
 	public float Length( ){
 		return ( float )Math.sqrt(x * x + y * y + z * z + w * w);
 	}
+
 	public psQuaternion Normalize( ){
 		float length = Length( );
 		x /= length;
@@ -46,9 +49,11 @@ public class psQuaternion {
 		w /= length;
 		return this;
 	}
+
 	public psQuaternion Conjugate( ){
 		return new psQuaternion( -x, -y, -z, w );
 	}
+
 	public psQuaternion Multiply( psQuaternion r ){
 		float w_ = w * r.GetW( ) - x * r.GetX( ) - y * r.GetY( ) - z * r.GetZ( );
 		float x_ = x * r.GetW( ) + w * r.GetX( ) + y * r.GetZ( ) - z * r.GetY( );
@@ -56,6 +61,7 @@ public class psQuaternion {
 		float z_ = z * r.GetW( ) + w * r.GetZ( ) + x * r.GetY( ) - y * r.GetX( );
 		return new psQuaternion( x_, y_, z_, w_ );
 	}
+
 	public psQuaternion Multiply( Vector3f r ){
 		float w_ = -x * r.GetX( ) - y * r.GetY( ) - z * r.GetZ( );
 		float x_ =  w * r.GetX( ) + y * r.GetZ( ) - z * r.GetY( );
