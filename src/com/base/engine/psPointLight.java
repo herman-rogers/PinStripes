@@ -7,11 +7,13 @@ public class psPointLight {
     private psBaseLight baseLight;
     private psAttenuation attenuation;
     private Vector3f position;
+    private float range;
 
-    public psPointLight( psBaseLight baseLight, psAttenuation attenuation, Vector3f position ){
+    public psPointLight( psBaseLight baseLight, psAttenuation attenuation, Vector3f position, float range ){
         this.baseLight = baseLight;
         this.attenuation = attenuation;
         this.position = position;
+        this.range = range;
     }
 
     public Vector3f getPosition() {
@@ -36,5 +38,13 @@ public class psPointLight {
 
     public void setAttenuation(psAttenuation attenuation) {
         this.attenuation = attenuation;
+    }
+
+    public float getRange() {
+        return range;
+    }
+
+    public void setRange(float range) {
+        this.range = range;
     }
 }

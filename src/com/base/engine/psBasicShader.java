@@ -12,8 +12,8 @@ public class psBasicShader extends psShader {
 
     private psBasicShader( ){
         super( );
-        addVertexShader(psResourceLoader.LoadShader("basicVertex.vshader"));
-        addFragmentShader(psResourceLoader.LoadShader("basicFragment.fshader"));
+        addVertexShaderFromFile( "basicVertex.vshader" );
+        addFragmentShaderFromFile( "basicFragment.fshader" );
         compileShader( );
         addUniformVariable( "transform" );
         addUniformVariable( "color" );

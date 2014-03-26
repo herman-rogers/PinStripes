@@ -1,4 +1,6 @@
 package com.base.engine;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.HashMap;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL32.*;
@@ -44,6 +46,18 @@ public class psShader {
         addProgram( text, GL_FRAGMENT_SHADER );
     }
 
+    public void addVertexShaderFromFile( String text ){
+        addProgram( LoadShader( text ), GL_VERTEX_SHADER );
+    }
+
+    public void addGeometryShaderFromFile( String text ){
+        addProgram( LoadShader( text ), GL_GEOMETRY_SHADER );
+    }
+
+    public void addFragmentShaderFromFile( String text ){
+        addProgram(LoadShader(text), GL_FRAGMENT_SHADER);
+    }
+
     public void compileShader( ){
         glLinkProgram( program );
         ShaderErrorLog( glGetProgrami(program, GL_LINK_STATUS), 0, glGetProgramInfoLog( program, 1024 ) );
@@ -70,11 +84,27 @@ public class psShader {
     }
 
     public void setUniform( String uniformName, Vector3f value ){
-        glUniform3f(uniformHashMap.get(uniformName), value.GetX(), value.GetY(), value.GetZ());
+        glUniform3f(uniformHashMap.get( uniformName ), value.GetX( ), value.GetY( ), value.GetZ( ) );
     }
 
     public void setUniformMatrix( String uniformName, Matrix4f value ){
         glUniformMatrix4( uniformHashMap.get( uniformName ), true, psUtil.CreateFlippedBuffer(value) );
+    }
+
+    private static String LoadShader( String fileName ){
+        StringBuilder shaderSource = new StringBuilder( );
+        String line;
+        try{
+            BufferedReader shaderReader = new BufferedReader( new FileReader( "./resources/shaders/" + fileName ) );
+            while( ( line = shaderReader.readLine( ) ) != null ){
+                shaderSource.append( line ).append( "\n" );
+            }
+            shaderReader.close( );
+        } catch ( Exception e ){
+            e.printStackTrace( );
+            System.exit( 1 );
+        }
+        return shaderSource.toString( );
     }
 
     private void ShaderErrorLog( int checkValue, int errorValue, String errorMessage ){

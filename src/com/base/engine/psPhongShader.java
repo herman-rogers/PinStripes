@@ -6,13 +6,15 @@ import org.lwjgl.Sys;
  * Created by Admin on 3/25/14.
  */
 public class psPhongShader extends psShader {
-    private static final psPhongShader instance = new psPhongShader( );
     private static final int MAX_POINT_LIGHTS = 4;
+    private static final int MAX_SPOT_LIGHTS = 4;
+    private static final psPhongShader instance = new psPhongShader( );
     private static Vector3f ambientLight = new Vector3f( 0.1f, 0.1f, 0.1f );
     private static psDirectionalLight directionalLight = new psDirectionalLight(
                                         new psBaseLight( new Vector3f( 1.0f, 1.0f, 1.0f ), 0 ),
                                         new Vector3f( 0,0,0 ) );
     private static psPointLight[] pointLights = new psPointLight[] {};
+    private static psSpotLight[] spotLights = new psSpotLight[] {};
 
     public static psPhongShader getInstance( ){
         return instance;
@@ -20,8 +22,8 @@ public class psPhongShader extends psShader {
 
     private psPhongShader( ){
         super( );
-        addVertexShader( psResourceLoader.LoadShader("phongVertex.vshader") );
-        addFragmentShader( psResourceLoader.LoadShader("phongFragment.fshader") );
+        addVertexShaderFromFile( "phongVertex.vshader" );
+        addFragmentShaderFromFile( "phongFragment.fshader" );
         compileShader( );
         addUniformVariable( "transform" );
         addUniformVariable( "specularIntensity" );
@@ -41,6 +43,19 @@ public class psPhongShader extends psShader {
             addUniformVariable( "pointLights[" + i + "].attenuation.linear" );
             addUniformVariable( "pointLights[" + i + "].attenuation.exponent" );
             addUniformVariable( "pointLights[" + i + "].position" );
+            addUniformVariable( "pointLights[" + i + "].range" );
+        }
+
+        for( int i = 0; i < MAX_SPOT_LIGHTS; i++ ){
+            addUniformVariable( "spotLights[" + i + "].pointLight.base.color" );
+            addUniformVariable( "spotLights[" + i + "].pointLight.base.intensity" );
+            addUniformVariable( "spotLights[" + i + "].pointLight.attenuation.constant" );
+            addUniformVariable( "spotLights[" + i + "].pointLight.attenuation.linear" );
+            addUniformVariable( "spotLights[" + i + "].pointLight.attenuation.exponent" );
+            addUniformVariable( "spotLights[" + i + "].pointLight.position" );
+            addUniformVariable( "spotLights[" + i + "].pointLight.range" );
+            addUniformVariable( "spotLights[" + i + "].direction" );
+            addUniformVariable( "spotLights[" + i + "].cutoff" );
         }
     }
 
@@ -62,6 +77,10 @@ public class psPhongShader extends psShader {
         setUniform( "directionalLight", directionalLight );
         for( int i = 0; i < pointLights.length; i++ ) {
             setUniform( "pointLights[" + i + "]", pointLights[i] );
+        }
+
+        for( int i = 0; i < spotLights.length; i++ ) {
+            setUniform( "spotLights[" + i + "]", spotLights[i] );
         }
     }
 
@@ -88,6 +107,17 @@ public class psPhongShader extends psShader {
         psPhongShader.pointLights = pointLights;
     }
 
+    public static void SetSpotLights( psSpotLight[] spotLights ){
+        if( pointLights.length > MAX_SPOT_LIGHTS ){
+            System.err.println( "LAWDY! TOO MANY SPOT LIGHTS! I can only handle " + MAX_SPOT_LIGHTS
+                    + ". You tried to use" +
+                    spotLights.length );
+            new Exception( ).printStackTrace( );
+            System.exit( 1 );
+        }
+        psPhongShader.spotLights = spotLights;
+    }
+
     public void setUniform( String uniformName, psBaseLight baseLight ){
         setUniform( uniformName + ".color", baseLight.getColor( ) );
         setUniformFloat( ( uniformName + ".intensity" ), baseLight.getIntensity( ) );
@@ -104,5 +134,14 @@ public class psPhongShader extends psShader {
         setUniformFloat( uniformName + ".attenuation.linear", pointLight.getAttenuation( ).getLinear( ) );
         setUniformFloat( uniformName + ".attenuation.exponent", pointLight.getAttenuation( ).getExponent( ) );
         setUniform( uniformName + ".position", pointLight.getPosition( ) );
+        setUniformFloat( uniformName + ".range", pointLight.getRange( ) );
     }
+
+    public void setUniform( String uniformName, psSpotLight spotLight ){
+        setUniform( uniformName + ".pointLight", spotLight.getPointLight( ) );
+        setUniform( uniformName + ".direction", spotLight.getDirection( ) );
+        setUniformFloat( uniformName + ".cutoff", spotLight.getCutoff( ) );
+
+    }
+
 }
