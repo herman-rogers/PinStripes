@@ -22,8 +22,8 @@ public class psPhongShader extends psShader {
 
     private psPhongShader( ){
         super( );
-        addVertexShaderFromFile( "phongVertex.vshader" );
-        addFragmentShaderFromFile( "phongFragment.fshader" );
+        addVertexShaderFromFile( "phongVertex.vert" );
+        addFragmentShaderFromFile( "phongFragment.frag" );
         compileShader( );
         addUniformVariable( "transform" );
         addUniformVariable( "specularIntensity" );

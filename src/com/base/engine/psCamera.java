@@ -6,7 +6,7 @@ import org.lwjgl.input.Keyboard;
  * Created by Admin on 3/22/14.
  */
 public class psCamera {
-    public  static final Vector3f yAxis = new Vector3f( 0,0,0 );
+    public  static final Vector3f yAxis = new Vector3f( 0,1,0 );
     private Vector3f position;
     private Vector3f forward;
     private Vector3f up;
@@ -24,7 +24,7 @@ public class psCamera {
     //THIS IS FOR TESTING, CAN BE REMOVED
     public void Input( ){
         float moveAmount = ( float )( 10 * psTime.GetDelta( ) );
-        float rotationAmount = ( float )( 1 * psTime.GetDelta( ) );
+        float rotationAmount = ( float )( 100 * psTime.GetDelta( ) );
         if( psInput.GetKey( Keyboard.KEY_W ) ){
             Move( getForward( ), moveAmount );
         }

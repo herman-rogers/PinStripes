@@ -30,25 +30,21 @@ public class Game {
         transform.SetProjection(70.0f, Window.GetWidth(), Window.GetHeight(), 0.1f, 1000);
         transform.setCamera(camera);
         psPhongShader.setAmbientLight( new Vector3f( 0.3f, 0.3f, 0.3f ) );
-//        psPhongShader.SetDirectionalLight(new psDirectionalLight(
-//                new psBaseLight(new Vector3f(1.0f, 1.0f, 1.0f), 2.0f),
-//                new Vector3f(0, -1, 5)));
-
         psPhongShader.SetPointLight( new psPointLight[] {testPointLightOne, testPointLightTwo } );
 	}
 
     //Example of how to render models programmatically, can be removed
-    private void Pyramid( ){
-        psVertex[] vertices = new psVertex[] { new psVertex( new Vector3f( -1.0f, -1.0f, 0.5773f ), new Vector2f( 0.0f, 0.0f ) ),
-                                               new psVertex( new Vector3f( 0.0f, -1.0f, -1.15475f ), new Vector2f( 0.5f, 0.0f ) ),
-                                               new psVertex( new Vector3f( 1.0f, -1.0f, 0.5773f ),new Vector2f( 1.0f, 0 ) ),
-                                               new psVertex( new Vector3f( 0.0f, 1.0f, 0.0f ), new Vector2f( 0.5f, 1.0f ) ) };
-        int[] indices = new int[] { 0, 3, 1,
-                1, 3, 2,
-                2, 3, 0,
-                1, 2, 0 };
-        mesh = new psMesh( vertices, indices, true );
-    }
+//    private void Pyramid( ){
+//        psVertex[] vertices = new psVertex[] { new psVertex( new Vector3f( -1.0f, -1.0f, 0.5773f ), new Vector2f( 0.0f, 0.0f ) ),
+//                                               new psVertex( new Vector3f( 0.0f, -1.0f, -1.15475f ), new Vector2f( 0.5f, 0.0f ) ),
+//                                               new psVertex( new Vector3f( 1.0f, -1.0f, 0.5773f ),new Vector2f( 1.0f, 0 ) ),
+//                                               new psVertex( new Vector3f( 0.0f, 1.0f, 0.0f ), new Vector2f( 0.5f, 1.0f ) ) };
+//        int[] indices = new int[] { 0, 3, 1,
+//                1, 3, 2,
+//                2, 3, 0,
+//                1, 2, 0 };
+//        mesh = new psMesh( vertices, indices, true );
+//    }
 
     private void Platform( ){
         float fieldDepth = 10.0f;

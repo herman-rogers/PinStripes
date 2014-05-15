@@ -1,8 +1,8 @@
 package com.base.engine;
 public class MainComponent {
 	public static final double frameCap = 5000.0;
-	static final int           screenWidth = 800;
-	static final int           screenHeight = 800;
+	static final int           screenWidth = 1000;
+	static final int           screenHeight = 1000;
 	static final String        screenTitle	= "PinStripes";
 	private boolean            isRunning;
 	private Game game;
